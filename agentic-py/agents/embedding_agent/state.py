@@ -19,25 +19,6 @@ class Category(Enum):
     OTHER = "other"
 
 
-class InputState(BaseModel):
-    rss_feed_url: str = Field(
-        description="The URL of the RSS feed to extract articles from", min_length=1
-    )
-    num_articles: int = Field(
-        description="The number of articles to extract",
-        default=10,
-        min_value=1,
-        max_value=100,
-    )
-    category: Category = Field(
-        description="The category of the articles", default=Category.OTHER
-    )
-
-
-class OutputState(BaseModel):
-    pass
-
-
 class Article(BaseModel):
     title: str = Field(description="The title of the article", min_length=1)
     description: Optional[str] = Field(
@@ -56,5 +37,24 @@ class Article(BaseModel):
     )
 
 
-class EmbeddingAgentState(InputState, OutputState):
+class InputState(BaseModel):
+    rss_feed_url: str = Field(
+        description="The URL of the RSS feed to extract articles from", min_length=1
+    )
+    num_articles: int = Field(
+        description="The number of articles to extract",
+        default=10,
+        min_value=1,
+        max_value=100,
+    )
+    category: Category = Field(
+        description="The category of the articles", default=Category.OTHER
+    )
+
+
+class OutputState(BaseModel):
     articles: List[Article] = Field(description="The articles to embed", default=[])
+
+
+class EmbeddingAgentState(InputState, OutputState):
+    pass
