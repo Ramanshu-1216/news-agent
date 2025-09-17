@@ -81,3 +81,63 @@ def sanitize_metadata(metadata: dict) -> dict:
         else:
             clean[k] = v
     return clean
+
+
+def enhance_chunks(chunks: List[Document], articles: List[Article]) -> List[Document]:
+    url_to_article = {article.url: article for article in articles}
+
+    enhanced_chunks = []
+
+    for chunk in chunks:
+        try:
+            chunk_url = chunk.metadata.get("url")
+
+            if not chunk_url:
+                logger.warning(f"Chunk missing URL in metadata, skipping enhancement")
+                enhanced_chunks.append(chunk)
+                continue
+
+            # Find the corresponding article
+            article = url_to_article.get(chunk_url)
+
+            if not article:
+                logger.warning(
+                    f"No article found for URL: {chunk_url}, skipping enhancement"
+                )
+                enhanced_chunks.append(chunk)
+                continue
+
+            # Create enhanced page content
+            enhanced_content_parts = []
+
+            # Add title if available
+            if article.title:
+                enhanced_content_parts.append(f"Title: {article.title}")
+
+            # Add description if available
+            if article.description:
+                enhanced_content_parts.append(f"Description: {article.description}")
+
+            # Add separator and original content
+            if enhanced_content_parts:
+                enhanced_content_parts.append("Content:")
+                enhanced_content = (
+                    "\n\n".join(enhanced_content_parts) + "\n\n" + chunk.page_content
+                )
+            else:
+                enhanced_content = chunk.page_content
+
+            # Create enhanced chunk
+            enhanced_chunk = Document(
+                page_content=enhanced_content, metadata=chunk.metadata
+            )
+
+            enhanced_chunks.append(enhanced_chunk)
+
+        except Exception as e:
+            logger.error(f"Error enhancing chunk: {e}")
+            # If enhancement fails, keep the original chunk
+            enhanced_chunks.append(chunk)
+
+    logger.info(f"Enhanced {len(enhanced_chunks)} chunks with article metadata")
+    return enhanced_chunks

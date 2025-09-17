@@ -6,6 +6,7 @@ from agents.embedding_agent.nodes.extract_articles.node import extract_articles
 from agents.embedding_agent.nodes.embed_articles.utils import (
     get_token_count,
     convert_to_documents,
+    enhance_chunks,
 )
 from agents.embedding_agent.nodes.embed_articles.config import EmbeddingConfig
 from agents.common.vector_store import (
@@ -37,13 +38,18 @@ def embed_articles(state: EmbeddingAgentState) -> EmbeddingAgentState:
         )
         chunks = text_splitter.split_documents(documents)
 
+        # Enhance chunks
+        enhanced_chunks = enhance_chunks(chunks, state.articles)
+
         # Add chunks to vector store with category support
 
         vector_store_config = _get_config_from_env(
             namespace=state.category.value,
         )
         try:
-            result = add_documents_to_vector_store(chunks, config=vector_store_config)
+            result = add_documents_to_vector_store(
+                enhanced_chunks, config=vector_store_config
+            )
             logger.info(
                 f"Successfully added {result['successfully_added']} documents to vector store{vector_store_config.namespace}"
             )
