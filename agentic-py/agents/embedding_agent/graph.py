@@ -1,3 +1,4 @@
+import asyncio
 from langgraph.graph import START, END, StateGraph
 from agents.embedding_agent.state import (
     EmbeddingAgentState,
@@ -31,16 +32,27 @@ def compile_graph():
     return graph.compile()
 
 
-def run_graph():
+def run_graph(state: InputState):
     graph = compile_graph()
-    graph.invoke(
-        {
-            "rss_feed_url": "https://www.theguardian.com/world/rss",
-            "num_articles": 10,
-            "category": Category.NEWS,
-        }
+    return graph.invoke(state)
+
+
+async def run_async_graph(state: InputState):
+    graph = compile_graph()
+    return await graph.ainvoke(state)
+
+
+async def test_graph():
+    result = await run_async_graph(
+        state=InputState(
+            rss_feed_url="https://www.theguardian.com/world/rss",
+            num_articles=10,
+            category=Category.NEWS,
+        )
     )
+    print(result)
+    return result
 
 
 if __name__ == "__main__":
-    run_graph()
+    asyncio.run(test_graph())
