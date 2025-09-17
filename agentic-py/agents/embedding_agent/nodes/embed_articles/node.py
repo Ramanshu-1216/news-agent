@@ -1,10 +1,8 @@
 from agents.embedding_agent.state import EmbeddingAgentState
-from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import dotenv
 import logging
 from agents.embedding_agent.nodes.extract_articles.node import extract_articles
-from typing import List, Optional
 from agents.embedding_agent.nodes.embed_articles.utils import (
     get_token_count,
     convert_to_documents,
@@ -21,12 +19,9 @@ logger = logging.getLogger(__name__)
 dotenv.load_dotenv()
 
 
-def embed_articles(
-    state: EmbeddingAgentState, config: Optional[EmbeddingConfig] = None
-) -> List[Document]:
-    # Use default config if none provided
-    if config is None:
-        config = EmbeddingConfig()
+def embed_articles(state: EmbeddingAgentState) -> EmbeddingAgentState:
+    # Use default embedding config for chunking parameters
+    embedding_config = EmbeddingConfig()
 
     logger.info(f"Processing {len(state.articles)} articles for embedding")
 
@@ -36,8 +31,8 @@ def embed_articles(
 
         # Split documents into chunks
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=config.chunk_size,
-            chunk_overlap=config.chunk_overlap,
+            chunk_size=embedding_config.chunk_size,
+            chunk_overlap=embedding_config.chunk_overlap,
             length_function=get_token_count,
         )
         chunks = text_splitter.split_documents(documents)

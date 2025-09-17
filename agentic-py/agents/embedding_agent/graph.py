@@ -1,5 +1,10 @@
 from langgraph.graph import START, END, StateGraph
-from agents.embedding_agent.state import EmbeddingAgentState, InputState, OutputState
+from agents.embedding_agent.state import (
+    EmbeddingAgentState,
+    InputState,
+    OutputState,
+    Category,
+)
 from agents.embedding_agent.nodes.extract_articles.node import extract_articles
 from agents.embedding_agent.nodes.embed_articles.node import embed_articles
 
@@ -23,9 +28,19 @@ def create_graph():
 
 def compile_graph():
     graph = create_graph()
-    graph.compile()
-    return graph
+    return graph.compile()
 
 
 def run_graph():
-    pass
+    graph = compile_graph()
+    graph.invoke(
+        {
+            "rss_feed_url": "https://www.theguardian.com/world/rss",
+            "num_articles": 10,
+            "category": Category.NEWS,
+        }
+    )
+
+
+if __name__ == "__main__":
+    run_graph()
