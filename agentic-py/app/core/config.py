@@ -9,6 +9,12 @@ class Settings(BaseSettings):
     JINA_API_KEY: str
     GOOGLE_API_KEY: str
 
+    # Security settings
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:8001",
+        "https://backend-mc9s.onrender.com",
+    ]
+
     # Scheduler settings
     ENABLE_SCHEDULER: bool = True
     EMBEDDING_CRON_HOURS: int = 12  # Run every 12 hours
