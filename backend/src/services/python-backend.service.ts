@@ -103,6 +103,7 @@ export class PythonBackendService {
       let fullResponse = "";
       let citations: any[] = [];
       let hasReceivedData = false;
+      let buffer = ""; // Buffer for incomplete SSE data
 
       // Set up a timeout to prevent hanging connections
       const streamTimeout = setTimeout(() => {
@@ -115,12 +116,31 @@ export class PythonBackendService {
       response.data.on("data", (chunk: Buffer) => {
         hasReceivedData = true;
         clearTimeout(streamTimeout);
-        const lines = chunk.toString().split("\n");
+
+        buffer += chunk.toString();
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
+          if (line.trim() === "") continue;
+
           if (line.startsWith("data: ")) {
             try {
-              const data: StreamEvent = JSON.parse(line.substring(6));
+              const jsonData = line.substring(6).trim();
+
+              // Skip if empty data
+              if (!jsonData) continue;
+
+              // Validate JSON before parsing
+              if (!this.isValidJSON(jsonData)) {
+                logger.warn(
+                  "Invalid JSON received, skipping:",
+                  jsonData.substring(0, 100)
+                );
+                continue;
+              }
+
+              const data: StreamEvent = JSON.parse(jsonData);
 
               if (data.event === "response_chunk") {
                 const chunkText = data.data.chunk;
@@ -134,7 +154,11 @@ export class PythonBackendService {
                 onError(data.data.error || "Unknown streaming error");
               }
             } catch (e) {
-              logger.error("Error parsing SSE data:", e);
+              logger.error("Error parsing SSE data:", {
+                error: e instanceof Error ? e.message : String(e),
+                line: line.substring(0, 200),
+                bufferLength: buffer.length,
+              });
             }
           }
         }
@@ -142,6 +166,15 @@ export class PythonBackendService {
 
       response.data.on("end", () => {
         clearTimeout(streamTimeout);
+
+        // Process any remaining data in buffer
+        if (buffer.trim()) {
+          logger.warn(
+            "Stream ended with remaining buffer data:",
+            buffer.substring(0, 100)
+          );
+        }
+
         logger.info("Stream ended successfully");
       });
 
@@ -180,7 +213,15 @@ export class PythonBackendService {
       return false;
     }
   }
+
+  private isValidJSON(str: string): boolean {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
-// Singleton instance
 export const pythonBackendService = new PythonBackendService();
