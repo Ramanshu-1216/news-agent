@@ -12,6 +12,7 @@ class VectorDocumentMetadata(TypedDict):
     similarity_score: float
     chunk_id: str
     category: str
+    article_id: str
 
 
 class ProcessedVectorDocument(TypedDict):

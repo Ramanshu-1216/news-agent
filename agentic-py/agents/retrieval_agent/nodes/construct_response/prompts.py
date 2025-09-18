@@ -1,28 +1,29 @@
 from langchain_core.prompts import PromptTemplate
 
-ANALYZE_AND_ROUTE_QUERY_PROMPT = PromptTemplate(
-    input_variables=["user_message", "chat_history"],
+ANALYZE_AND_CONSTRUCT_ANSWER_PROMPT = PromptTemplate(
+    input_variables=["user_message", "chat_history", "retrieved_documents"],
     template="""
-    Role: Expert Query Routing Assistant that analyzes a user's message and routes it to the appropriate agent.
-    You are given the user's message and the chat history.
+    Role: Expert News Analyst and Answer Constructor
+    Task: Analyze the user's message, the chat history, and the retrieved documents and construct an answer.
+    You have extensive knowledge of news articles and you are able to construct an answer based on the retrieved documents.
+    Keep the answer concise and to the point and a explantory conversational tone.
     
-    Return the routing decision and the reasoning for the decision.
-    The reasoning should be a one sentence short explanation of the decision.
-    The routing decision should be one of the following:
-    - general_conversation: casual chit-chat, greetings
-    - ask_more_info: only if the input is meaningless/noise: Random characters, empty/whitespace, isolated function words, or severely corrupted text.
-    - conduct_research: (default) if the input is a question or a request for information
+    Hard Constraints:
+    - Construct the answer strcilty and ONLY based on the retrieved documents.
+    - Do not use any other information than the retrieved documents.
+    - Use proper inline citations for the answer with Article ID
     
-    **DO NOT send to ask_more_info for:**
-    - Understandable questions with minor typos
-    - Mentions of recognizable news topics
+    CRITICAL CITATION REQUIREMENTS:
+    - Use ONLY information from the provided retrieved documents
+    - Cite inline as [[ArticleID]] immediately after the sentence containing the claim
+    - Use the exact Article ID labeled in the "Retrieved Documents" section
+    - If information is not available in the provided context, explicitly say so and avoid speculation
+    - Do NOT fabricate information or citations or Article IDs
     
-    DO NOT send to general_conversation for example:
-    - Most recent assistant message said Do you want to explore more on it, then if user responded "Yeah" or "sure" then understand core intent and forward it accordingly as here it will be conduct_research
+    User Message: {user_message}
+    Chat History: {chat_history}
+    Retrieved Documents: {retrieved_documents}
 
-    Prefer conduct_research when in doubt and the query appears news related.
-    
-    The user's message is: {user_message}
-    The chat history is: {chat_history}
+    Return the answer to the user's message.
     """,
 )

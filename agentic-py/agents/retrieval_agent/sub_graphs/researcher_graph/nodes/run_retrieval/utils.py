@@ -45,6 +45,7 @@ def process_chunk_document(doc: Document, score: float) -> ProcessedVectorDocume
             similarity_score=score,
             chunk_id=doc.metadata["chunk_id"],
             category=doc.metadata["category"],
+            article_id=doc.metadata["article_id"],
         )
 
         return ProcessedVectorDocument(

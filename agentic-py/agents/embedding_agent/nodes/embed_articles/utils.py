@@ -51,6 +51,9 @@ def convert_to_documents(articles: List[Article], category: Category) -> List[Do
                 logger.warning(f"Skipping article {i}: missing content or title")
                 continue
 
+            # Generate unique article ID
+            article_id = f"art_{uuid.uuid4().hex[:8]}"
+
             document = Document(
                 page_content=article.content,
                 metadata={
@@ -62,6 +65,7 @@ def convert_to_documents(articles: List[Article], category: Category) -> List[Do
                     "url": article.url,
                     "source": article.source,
                     "category": category.value,
+                    "article_id": article_id,
                 },
             )
             documents.append(document)
@@ -130,15 +134,15 @@ def enhance_chunks(chunks: List[Document], articles: List[Article]) -> List[Docu
 
             # Add title if available
             if article.title:
-                enhanced_content_parts.append(f"Title: {article.title}")
+                enhanced_content_parts.append(f"__Title__: {article.title}")
 
             # Add description if available
             if article.description:
-                enhanced_content_parts.append(f"Description: {article.description}")
+                enhanced_content_parts.append(f"__Description__: {article.description}")
 
             # Add separator and original content
             if enhanced_content_parts:
-                enhanced_content_parts.append("Content:")
+                enhanced_content_parts.append("__Content__:")
                 enhanced_content = (
                     "\n\n".join(enhanced_content_parts) + "\n\n" + chunk.page_content
                 )

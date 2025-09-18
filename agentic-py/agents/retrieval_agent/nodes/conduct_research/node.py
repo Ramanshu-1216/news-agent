@@ -8,7 +8,6 @@ from agents.retrieval_agent.sub_graphs.researcher_graph.graph import (
     compile_researcher_graph,
 )
 from agents.embedding_agent.state import Category
-from pprint import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +32,6 @@ def conduct_research(state: RetrievalAgentState) -> RetrievalAgentState:
         researcher_graph_output = researcher_graph.invoke(researcher_graph_input_state)
 
         state.retrieved_documents = researcher_graph_output["final_documents"]
-
-        pprint([doc["metadata"] for doc in state.retrieved_documents])
 
         return state
 
