@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: agentic-py
+    env: python
+    rootDir: agentic-py
+    buildCommand: |
+      pip install poetry
+      poetry install
+    startCommand: |
+      poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
