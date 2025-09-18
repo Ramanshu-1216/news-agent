@@ -1,27 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSessionContext } from "@/contexts/session-context";
+import { useChatContext } from "@/contexts/chat-context";
 import "./chat-interface.scss";
 
 export function ChatInterface() {
-  const { sessionId } = useSessionContext();
+  const { sendMessage, isStreaming } = useChatContext();
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || isLoading) return;
+    if (!message.trim() || isStreaming) return;
 
-    setIsLoading(true);
+    const messageToSend = message.trim();
+    setMessage("");
+
     try {
-      // TODO: Implement chat message sending
-      console.log("Sending message:", message);
-      setMessage("");
+      await sendMessage(messageToSend);
     } catch (error) {
       console.error("Failed to send message:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -38,14 +35,31 @@ export function ChatInterface() {
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Ask me anything about news articles..."
                   className="chat-interface__input"
-                  disabled={isLoading}
+                  disabled={isStreaming}
                 />
                 <button
                   type="submit"
-                  disabled={!message.trim() || isLoading}
+                  disabled={!message.trim() || isStreaming}
                   className="chat-interface__send-button"
+                  title={isStreaming ? "Sending..." : "Send message"}
                 >
-                  {isLoading ? <div className="spinner" /> : <span>Send</span>}
+                  {isStreaming ? (
+                    <div className="spinner" />
+                  ) : (
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                    </svg>
+                  )}
                 </button>
               </div>
             </form>

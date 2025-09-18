@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { useSessionContext } from "@/contexts/session-context";
+import { useChatContext } from "@/contexts/chat-context";
 import { ChatInterface } from "@/components/chat/chat-interface";
+import { ChatMessages } from "@/components/chat/chat-messages";
 
 export function Dashboard() {
-  const { session } = useSessionContext();
-  const hasMessages = session && session.messageCount > 0;
+  const { messages, isStreaming, streamingMessage } = useChatContext();
+  const hasMessages = messages.length > 0;
 
   // If there are messages, show chat interface
   if (hasMessages) {
@@ -14,19 +15,11 @@ export function Dashboard() {
       <div className="dashboard dashboard--chat">
         <div className="container">
           <div className="chat-container">
-            <div className="chat-messages">
-              {/* TODO: Add chat messages here */}
-              <div className="chat-placeholder">
-                <p
-                  style={{
-                    color: "rgba(255, 255, 255, 0.6)",
-                    textAlign: "center",
-                  }}
-                >
-                  Chat messages will appear here...
-                </p>
-              </div>
-            </div>
+            <ChatMessages
+              messages={messages}
+              isStreaming={isStreaming}
+              streamingMessage={streamingMessage}
+            />
           </div>
         </div>
         <ChatInterface />

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useSessionContext } from "@/contexts/session-context";
+import { useChatContext } from "@/contexts/chat-context";
 import { useClearSession } from "@/hooks/use-session";
 import "./main-layout.scss";
 import "../dashboard/dashboard.scss";
@@ -12,12 +13,15 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const { sessionId, session, setSessionId } = useSessionContext();
+  const { clearMessages } = useChatContext();
   const clearSessionMutation = useClearSession();
 
   const handleClearSession = async () => {
     if (sessionId) {
       try {
         await clearSessionMutation.mutateAsync(sessionId);
+        // Clear chat messages from context
+        clearMessages();
         // Clear session from localStorage and context
         setSessionId(null);
       } catch (error) {

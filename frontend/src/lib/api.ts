@@ -95,7 +95,19 @@ export const api = {
   chatHistory: {
     get: (sessionId: string) =>
       fetch(`${API_BASE_URL}/api/chat-history/${sessionId}`).then(
-        handleResponse
+        handleResponse<{
+          sessionId: string;
+          messages: Array<{
+            id: string;
+            role: string;
+            content: string;
+            timestamp: string;
+            category?: string;
+            citations?: unknown[];
+            metadata?: unknown;
+          }>;
+          totalMessages: number;
+        }>
       ),
   },
 
