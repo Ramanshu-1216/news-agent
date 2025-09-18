@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { sessionService } from "../services/session.service";
+import { chatHistoryService } from "../services/chat-history.service";
 import logger from "../utils/logger";
 
 export class ChatHistoryController {
   async getChatHistory(req: Request, res: Response): Promise<void> {
     try {
       const { sessionId } = req.params;
-      const messages = await sessionService.getChatHistory(sessionId);
+      const messages = await chatHistoryService.getChatHistory(sessionId);
       const session = await sessionService.getSession(sessionId);
 
       if (messages.length === 0 && !session) {

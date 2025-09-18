@@ -10,6 +10,7 @@ import chatHistoryRoutes from "./routes/chat-history.routes";
 import { sessionService } from "./services/session.service";
 import { pythonBackendService } from "./services/python-backend.service";
 import { databaseService } from "./services/database.service";
+import { redisService } from "./services/redis.service";
 
 const app: Application = express();
 
@@ -43,9 +44,10 @@ app.use(requestLogger);
 app.get("/health", async (req, res) => {
   const pythonBackendHealthy = await pythonBackendService.healthCheck();
   const databaseHealthy = await databaseService.healthCheck();
+  const redisHealthy = await redisService.healthCheck();
   const activeSessions = await sessionService.getActiveSessionCount();
 
-  const isHealthy = pythonBackendHealthy && databaseHealthy;
+  const isHealthy = pythonBackendHealthy && databaseHealthy && redisHealthy;
   const status = isHealthy ? "OK" : "UNHEALTHY";
   const statusCode = isHealthy ? 200 : 503;
 
@@ -55,6 +57,7 @@ app.get("/health", async (req, res) => {
     activeSessions,
     pythonBackend: pythonBackendHealthy ? "healthy" : "unhealthy",
     database: databaseHealthy ? "healthy" : "unhealthy",
+    redis: redisHealthy ? "healthy" : "unhealthy",
   });
 });
 

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { ChatMessage } from "../../models";
 import { sessionService } from "./session.service";
+import { chatHistoryService } from "./chat-history.service";
 import { pythonBackendService } from "./python-backend.service";
 import logger from "../utils/logger";
 
@@ -36,7 +37,7 @@ export class ChatService {
       timestamp: new Date(),
     };
 
-    await sessionService.addMessage(sessionId, userMessage);
+    await chatHistoryService.addMessage(sessionId, userMessage);
 
     // Prepare chat history for Python backend
     const chatHistory = await this.formatChatHistoryForBackend(sessionId);
@@ -57,7 +58,7 @@ export class ChatService {
       citations: response.citations,
     };
 
-    await sessionService.addMessage(sessionId, assistantMessage);
+    await chatHistoryService.addMessage(sessionId, assistantMessage);
 
     return {
       sessionId,
@@ -91,7 +92,7 @@ export class ChatService {
       timestamp: new Date(),
     };
 
-    await sessionService.addMessage(sessionId, userMessage);
+    await chatHistoryService.addMessage(sessionId, userMessage);
 
     // Prepare chat history for Python backend
     const chatHistory = await this.formatChatHistoryForBackend(sessionId);
@@ -122,7 +123,7 @@ export class ChatService {
           citations: responseCitations,
         };
 
-        await sessionService.addMessage(sessionId, assistantMessage);
+        await chatHistoryService.addMessage(sessionId, assistantMessage);
         onComplete(fullResponse, citations);
       },
       (error: string) => {
@@ -134,7 +135,7 @@ export class ChatService {
   private async formatChatHistoryForBackend(
     sessionId: string
   ): Promise<Array<{ role: string; content: string }>> {
-    const messages = await sessionService.getChatHistory(sessionId);
+    const messages = await chatHistoryService.getChatHistory(sessionId);
 
     const formattedHistory = messages
       .filter((msg) => msg.role === "user" || msg.role === "assistant")
