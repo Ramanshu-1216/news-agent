@@ -1,7 +1,8 @@
 from typing import Optional
 import tiktoken
 import logging
-from agents.embedding_agent.state import Article
+import uuid
+from agents.embedding_agent.state import Article, Category
 from langchain_core.documents import Document
 from typing import List
 from datetime import datetime
@@ -42,7 +43,7 @@ def get_token_count(text: str) -> int:
         return fallback_count
 
 
-def convert_to_documents(articles: List[Article]) -> List[Document]:
+def convert_to_documents(articles: List[Article], category: Category) -> List[Document]:
     documents = []
     for i, article in enumerate(articles):
         try:
@@ -60,6 +61,7 @@ def convert_to_documents(articles: List[Article]) -> List[Document]:
                     "description": article.description,
                     "url": article.url,
                     "source": article.source,
+                    "category": category.value,
                 },
             )
             documents.append(document)
@@ -94,7 +96,15 @@ def enhance_chunks(chunks: List[Document], articles: List[Article]) -> List[Docu
 
             if not chunk_url:
                 logger.warning(f"Chunk missing URL in metadata, skipping enhancement")
-                enhanced_chunks.append(chunk)
+                # Add chunk ID even for skipped chunks
+                chunk_id = f"cnk_{uuid.uuid4().hex[:8]}"
+                skip_metadata = chunk.metadata.copy()
+                skip_metadata["chunk_id"] = chunk_id
+
+                skip_chunk = Document(
+                    page_content=chunk.page_content, metadata=skip_metadata
+                )
+                enhanced_chunks.append(skip_chunk)
                 continue
 
             # Find the corresponding article
@@ -104,7 +114,15 @@ def enhance_chunks(chunks: List[Document], articles: List[Article]) -> List[Docu
                 logger.warning(
                     f"No article found for URL: {chunk_url}, skipping enhancement"
                 )
-                enhanced_chunks.append(chunk)
+                # Add chunk ID even for skipped chunks
+                chunk_id = f"cnk_{uuid.uuid4().hex[:8]}"
+                skip_metadata = chunk.metadata.copy()
+                skip_metadata["chunk_id"] = chunk_id
+
+                skip_chunk = Document(
+                    page_content=chunk.page_content, metadata=skip_metadata
+                )
+                enhanced_chunks.append(skip_chunk)
                 continue
 
             # Create enhanced page content
@@ -127,17 +145,30 @@ def enhance_chunks(chunks: List[Document], articles: List[Article]) -> List[Docu
             else:
                 enhanced_content = chunk.page_content
 
-            # Create enhanced chunk
+            # Generate unique chunk ID
+            chunk_id = f"cnk_{uuid.uuid4().hex[:8]}"
+
+            # Create enhanced chunk with chunk ID in metadata
+            enhanced_metadata = chunk.metadata.copy()
+            enhanced_metadata["chunk_id"] = chunk_id
+
             enhanced_chunk = Document(
-                page_content=enhanced_content, metadata=chunk.metadata
+                page_content=enhanced_content, metadata=enhanced_metadata
             )
 
             enhanced_chunks.append(enhanced_chunk)
 
         except Exception as e:
             logger.error(f"Error enhancing chunk: {e}")
-            # If enhancement fails, keep the original chunk
-            enhanced_chunks.append(chunk)
+            # If enhancement fails, keep the original chunk but add chunk ID
+            chunk_id = f"cnk_{uuid.uuid4().hex[:8]}"
+            fallback_metadata = chunk.metadata.copy()
+            fallback_metadata["chunk_id"] = chunk_id
+
+            fallback_chunk = Document(
+                page_content=chunk.page_content, metadata=fallback_metadata
+            )
+            enhanced_chunks.append(fallback_chunk)
 
     logger.info(f"Enhanced {len(enhanced_chunks)} chunks with article metadata")
     return enhanced_chunks

@@ -28,7 +28,7 @@ def embed_articles(state: EmbeddingAgentState) -> EmbeddingAgentState:
 
     try:
         # Convert articles to Document objects
-        documents = convert_to_documents(state.articles)
+        documents = convert_to_documents(state.articles, state.category)
 
         # Split documents into chunks
         text_splitter = RecursiveCharacterTextSplitter(
@@ -43,20 +43,18 @@ def embed_articles(state: EmbeddingAgentState) -> EmbeddingAgentState:
 
         # Add chunks to vector store with category support
 
-        vector_store_config = _get_config_from_env(
-            namespace=state.category.value,
-        )
+        vector_store_config = _get_config_from_env()
         try:
             result = add_documents_to_vector_store(
                 enhanced_chunks, config=vector_store_config
             )
             logger.info(
-                f"Successfully added {result['successfully_added']} documents to vector store{vector_store_config.namespace}"
+                f"Successfully added {result['successfully_added']} documents to vector store"
             )
 
             if result["failed_documents"] > 0:
                 logger.warning(
-                    f"Failed to add {result['failed_documents']} documents to vector store{vector_store_config.namespace}"
+                    f"Failed to add {result['failed_documents']} documents to vector store"
                 )
         except Exception as e:
             logger.error(f"Failed to add documents to vector store: {e}")
@@ -83,7 +81,7 @@ if __name__ == "__main__":
         if state.articles:
             state = embed_articles(state)
 
-            print(f"Articles processed and embedded in namespace: {state.category}")
+            print(f"Articles processed and embedded")
         else:
             print("No articles extracted")
 

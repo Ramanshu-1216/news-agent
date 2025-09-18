@@ -19,7 +19,6 @@ class VectorStoreConfig:
     embedding_model: str = "jina-embeddings-v3"
     max_retries: int = 3
     retry_delay: float = 1.0
-    namespace: Optional[str] = None  # Pinecone namespace for organizing documents
 
 
 # Global cache for vector store instances
@@ -27,18 +26,16 @@ _vector_store_cache: Dict[str, VectorStore] = {}
 _pinecone_client: Optional[Pinecone] = None
 
 
-def _generate_cache_key(index_name: str, namespace: Optional[str] = None) -> str:
-    if namespace:
-        return f"{index_name}:{namespace}"
-    return f"{index_name}:default"
+def _generate_cache_key(index_name: str) -> str:
+    return index_name
 
 
-def _get_config_from_env(namespace: Optional[str] = None) -> VectorStoreConfig:
+def _get_config_from_env() -> VectorStoreConfig:
     index_name = os.getenv("PINECONE_INDEX")
     if not index_name:
         raise ValueError("PINECONE_INDEX environment variable is required")
 
-    return VectorStoreConfig(index_name=index_name, namespace=namespace)
+    return VectorStoreConfig(index_name=index_name)
 
 
 def _get_pinecone_client() -> Pinecone:
@@ -123,17 +120,15 @@ def get_vector_store(config: Optional[VectorStoreConfig] = None) -> VectorStore:
         if config is None:
             config = _get_config_from_env()
 
-        # Generate cache key based on index name and namespace
-        cache_key = _generate_cache_key(config.index_name, config.namespace)
+        # Generate cache key based on index name
+        cache_key = _generate_cache_key(config.index_name)
 
         # Use cached instance if available
         if cache_key in _vector_store_cache:
             logger.debug(f"Returning cached vector store instance for key: {cache_key}")
             return _vector_store_cache[cache_key]
 
-        logger.info(
-            f"Initializing vector store with index: {config.index_name}, namespace: {config.namespace}"
-        )
+        logger.info(f"Initializing vector store with index: {config.index_name}")
 
         # Setup Pinecone index
         index = _setup_pinecone_index(config)
@@ -141,12 +136,10 @@ def get_vector_store(config: Optional[VectorStoreConfig] = None) -> VectorStore:
         # Create embedding model
         embedding = _create_embedding_model(config.embedding_model)
 
-        # Create vector store with namespace support
-        vector_store = PineconeVectorStore(
-            index=index, embedding=embedding, namespace=config.namespace
-        )
+        # Create vector store
+        vector_store = PineconeVectorStore(index=index, embedding=embedding)
 
-        # Cache the instance with namespace-aware key
+        # Cache the instance
         _vector_store_cache[cache_key] = vector_store
         logger.debug(f"Cached vector store instance with key: {cache_key}")
 
@@ -167,19 +160,13 @@ def add_documents_to_vector_store(
         raise ValueError("Documents list cannot be empty")
 
     try:
-        # Use config namespace
-        namespace = config.namespace if config else None
-
-        # Create config with namespace if not provided
+        # Create config if not provided
         if config is None:
-            config = _get_config_from_env(namespace)
+            config = _get_config_from_env()
 
         vector_store = get_vector_store(config)
 
-        namespace_info = f" in namespace '{namespace}'" if namespace else ""
-        logger.info(
-            f"Adding {len(documents)} documents to vector store{namespace_info}"
-        )
+        logger.info(f"Adding {len(documents)} documents to vector store")
 
         # Process documents in batches
         total_added = 0
@@ -190,9 +177,7 @@ def add_documents_to_vector_store(
             try:
                 vector_store.add_documents(batch)
                 total_added += len(batch)
-                logger.info(
-                    f"Added batch {i//batch_size + 1}: {len(batch)} documents{namespace_info}"
-                )
+                logger.info(f"Added batch {i//batch_size + 1}: {len(batch)} documents")
             except Exception as e:
                 logger.error(f"Failed to add batch {i//batch_size + 1}: {e}")
                 failed_docs.extend(batch)
@@ -202,7 +187,6 @@ def add_documents_to_vector_store(
             "successfully_added": total_added,
             "failed_documents": len(failed_docs),
             "success_rate": total_added / len(documents) if documents else 0,
-            "namespace": namespace,
             "index_name": config.index_name,
         }
 
