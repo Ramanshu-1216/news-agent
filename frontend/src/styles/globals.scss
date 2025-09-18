@@ -1,0 +1,199 @@
+// Global styles
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    var(--color-background) 0%,
+    var(--color-background-secondary) 100%
+  );
+  line-height: 1.7;
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+// Remove scrollbars but keep functionality
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+input,
+textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+// Smooth focus styles
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// CSS Variables
+:root {
+  // Primary Colors - Modern Blue Palette
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: #dbeafe;
+  --color-primary-dark: #1e40af;
+  --color-primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+
+  // Secondary Colors - Sophisticated Gray Palette
+  --color-secondary: #64748b;
+  --color-secondary-hover: #475569;
+  --color-secondary-light: #94a3b8;
+  --color-secondary-dark: #334155;
+
+  // Accent Colors
+  --color-accent: #8b5cf6;
+  --color-accent-light: #e9d5ff;
+  --color-accent-hover: #7c3aed;
+
+  // Status Colors
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-success-dark: #059669;
+
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-error-dark: #dc2626;
+
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-warning-dark: #d97706;
+
+  // Text Colors - Enhanced Hierarchy with Better Contrast
+  --color-text: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-light: #64748b;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #ffffff;
+
+  // Background Colors - Sophisticated Palette
+  --color-background: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-background-tertiary: #f1f5f9;
+  --color-background-elevated: #ffffff;
+  --color-background-overlay: rgba(15, 23, 42, 0.8);
+
+  // Border Colors
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-border-dark: #cbd5e1;
+
+  // Spacing - Enhanced Scale
+  --spacing-xs: 0.25rem; // 4px
+  --spacing-sm: 0.5rem; // 8px
+  --spacing-md: 1rem; // 16px
+  --spacing-lg: 1.5rem; // 24px
+  --spacing-xl: 2rem; // 32px
+  --spacing-2xl: 3rem; // 48px
+  --spacing-3xl: 4rem; // 64px
+  --spacing-4xl: 6rem; // 96px
+
+  // Border radius - Modern Scale
+  --radius-xs: 0.125rem; // 2px
+  --radius-sm: 0.25rem; // 4px
+  --radius-md: 0.5rem; // 8px
+  --radius-lg: 0.75rem; // 12px
+  --radius-xl: 1rem; // 16px
+  --radius-2xl: 1.5rem; // 24px
+  --radius-full: 9999px;
+
+  // Shadows - Enhanced Depth
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  // Transitions - Smooth and Natural
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  // Typography
+  --font-size-xs: 0.75rem; // 12px
+  --font-size-sm: 0.875rem; // 14px
+  --font-size-base: 1rem; // 16px
+  --font-size-lg: 1.125rem; // 18px
+  --font-size-xl: 1.25rem; // 20px
+  --font-size-2xl: 1.5rem; // 24px
+  --font-size-3xl: 1.875rem; // 30px
+  --font-size-4xl: 2.25rem; // 36px
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+}
+
+// Dark mode support (for future)
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #f9fafb;
+    --color-text-light: #d1d5db;
+    --color-text-muted: #9ca3af;
+
+    --color-background: #111827;
+    --color-background-secondary: #1f2937;
+    --color-background-tertiary: #374151;
+
+    --color-border: #374151;
+    --color-border-light: #4b5563;
+  }
+}
