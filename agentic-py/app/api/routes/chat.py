@@ -15,7 +15,14 @@ logger = logging.getLogger(__name__)
 def convert_chat_messages(chat_history: list) -> list[ChatMessage]:
     langchain_messages = []
     for msg in chat_history:
-        langchain_messages.append(ChatMessage(role=msg["role"], content=msg["content"]))
+        # Handle both dictionary and object formats
+        if isinstance(msg, dict):
+            langchain_messages.append(
+                ChatMessage(role=msg["role"], content=msg["content"])
+            )
+        else:
+            # If it's already a ChatMessage object, use its attributes
+            langchain_messages.append(ChatMessage(role=msg.role, content=msg.content))
     return langchain_messages
 
 
