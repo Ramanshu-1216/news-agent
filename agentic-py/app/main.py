@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api.routes import articles
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.routes import articles, chat
 from app.services.scheduler_service import (
     start_scheduler,
     stop_scheduler,
@@ -14,7 +15,17 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title=settings.APP_NAME)
 
+# Add CORS middleware for frontend integration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure this properly for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(articles.router)
+app.include_router(chat.router)
 
 
 @app.on_event("startup")

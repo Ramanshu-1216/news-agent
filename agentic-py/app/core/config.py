@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     PINECONE_API_KEY: str
     PINECONE_INDEX: str
     JINA_API_KEY: str
+    GOOGLE_API_KEY: str
 
     # Scheduler settings
     ENABLE_SCHEDULER: bool = True
@@ -14,6 +15,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra = "ignore"  # Ignore extra fields in environment variables
 
 
 settings = Settings()
