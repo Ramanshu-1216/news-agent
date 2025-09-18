@@ -4,8 +4,10 @@ services:
     env: python
     rootDir: agentic-py
     buildCommand: |
+      cd agentic-py
       pip install poetry
       poetry install
     startCommand: |
+      cd agentic-py
       poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
     plan: free
