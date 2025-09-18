@@ -23,7 +23,7 @@ export class ChatService {
     const { sessionId, message, category = "other" } = request;
 
     // Validate session exists
-    const session = sessionService.getSession(sessionId);
+    const session = await sessionService.getSession(sessionId);
     if (!session) {
       throw new Error("Session not found");
     }
@@ -36,10 +36,10 @@ export class ChatService {
       timestamp: new Date(),
     };
 
-    sessionService.addMessage(sessionId, userMessage);
+    await sessionService.addMessage(sessionId, userMessage);
 
     // Prepare chat history for Python backend
-    const chatHistory = this.formatChatHistoryForBackend(sessionId);
+    const chatHistory = await this.formatChatHistoryForBackend(sessionId);
 
     // Call Python backend
     const response = await pythonBackendService.sendChatMessage({
@@ -54,9 +54,10 @@ export class ChatService {
       role: "assistant",
       content: response.response,
       timestamp: new Date(),
+      citations: response.citations,
     };
 
-    sessionService.addMessage(sessionId, assistantMessage);
+    await sessionService.addMessage(sessionId, assistantMessage);
 
     return {
       sessionId,
@@ -76,7 +77,7 @@ export class ChatService {
     const { sessionId, message, category = "other" } = request;
 
     // Validate session exists
-    const session = sessionService.getSession(sessionId);
+    const session = await sessionService.getSession(sessionId);
     if (!session) {
       onError("Session not found");
       return;
@@ -90,10 +91,10 @@ export class ChatService {
       timestamp: new Date(),
     };
 
-    sessionService.addMessage(sessionId, userMessage);
+    await sessionService.addMessage(sessionId, userMessage);
 
     // Prepare chat history for Python backend
-    const chatHistory = this.formatChatHistoryForBackend(sessionId);
+    const chatHistory = await this.formatChatHistoryForBackend(sessionId);
 
     let fullResponse = "";
     let citations: any[] = [];
@@ -108,7 +109,7 @@ export class ChatService {
       (chunk: string) => {
         onChunk(chunk);
       },
-      (response: string, responseCitations: any[]) => {
+      async (response: string, responseCitations: any[]) => {
         fullResponse = response;
         citations = responseCitations;
 
@@ -118,9 +119,10 @@ export class ChatService {
           role: "assistant",
           content: fullResponse,
           timestamp: new Date(),
+          citations: responseCitations,
         };
 
-        sessionService.addMessage(sessionId, assistantMessage);
+        await sessionService.addMessage(sessionId, assistantMessage);
         onComplete(fullResponse, citations);
       },
       (error: string) => {
@@ -129,13 +131,12 @@ export class ChatService {
     );
   }
 
-  private formatChatHistoryForBackend(
+  private async formatChatHistoryForBackend(
     sessionId: string
-  ): Array<{ role: string; content: string }> {
-    const session = sessionService.getSession(sessionId);
-    if (!session) return [];
+  ): Promise<Array<{ role: string; content: string }>> {
+    const messages = await sessionService.getChatHistory(sessionId);
 
-    const formattedHistory = session.messages
+    const formattedHistory = messages
       .filter((msg) => msg.role === "user" || msg.role === "assistant")
       .map((msg) => ({
         role: msg.role,

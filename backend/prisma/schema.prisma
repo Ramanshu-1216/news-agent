@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Session {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  lastActivity DateTime @updatedAt
+  messageCount Int      @default(0)
+  
+  
+  messages    ChatMessage[]
+  
+  @@map("sessions")
+}
+
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  sessionId String
+  role      MessageRole
+  content   String
+  timestamp DateTime @default(now())
+  
+  category  String?  @default("other")
+  citations Json?   
+  metadata  Json?    
+  
+  
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  @@map("chat_messages")
+}
+
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}

@@ -6,9 +6,10 @@ export class ChatHistoryController {
   async getChatHistory(req: Request, res: Response): Promise<void> {
     try {
       const { sessionId } = req.params;
-      const messages = sessionService.getChatHistory(sessionId);
+      const messages = await sessionService.getChatHistory(sessionId);
+      const session = await sessionService.getSession(sessionId);
 
-      if (messages.length === 0 && !sessionService.getSession(sessionId)) {
+      if (messages.length === 0 && !session) {
         res.status(404).json({ error: "Session not found" });
         return;
       }

@@ -7,12 +7,19 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "ts-node server.ts",
-    "dev:watch": "nodemon --exec ts-node server.ts"
+    "dev:watch": "nodemon --exec ts-node server.ts",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@prisma/extension-accelerate": "^2.0.2",
     "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
@@ -20,6 +27,7 @@
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
     "nodemon": "^3.1.10",
+    "prisma": "^6.16.2",
     "tsconfig-paths": "^4.2.0",
     "uuid": "^13.0.0",
     "winston": "^3.17.0",

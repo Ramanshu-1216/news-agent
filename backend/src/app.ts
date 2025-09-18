@@ -9,6 +9,7 @@ import sessionRoutes from "./routes/session.routes";
 import chatHistoryRoutes from "./routes/chat-history.routes";
 import { sessionService } from "./services/session.service";
 import { pythonBackendService } from "./services/python-backend.service";
+import { databaseService } from "./services/database.service";
 
 const app: Application = express();
 
@@ -41,12 +42,19 @@ app.use(requestLogger);
 // Health check endpoint
 app.get("/health", async (req, res) => {
   const pythonBackendHealthy = await pythonBackendService.healthCheck();
+  const databaseHealthy = await databaseService.healthCheck();
+  const activeSessions = await sessionService.getActiveSessionCount();
 
-  res.json({
-    status: "OK",
+  const isHealthy = pythonBackendHealthy && databaseHealthy;
+  const status = isHealthy ? "OK" : "UNHEALTHY";
+  const statusCode = isHealthy ? 200 : 503;
+
+  res.status(statusCode).json({
+    status,
     timestamp: new Date().toISOString(),
-    activeSessions: sessionService.getActiveSessionCount(),
+    activeSessions,
     pythonBackend: pythonBackendHealthy ? "healthy" : "unhealthy",
+    database: databaseHealthy ? "healthy" : "unhealthy",
   });
 });
 

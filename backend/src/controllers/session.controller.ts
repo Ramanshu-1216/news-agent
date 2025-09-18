@@ -5,7 +5,7 @@ import logger from "../utils/logger";
 export class SessionController {
   async createSession(req: Request, res: Response): Promise<void> {
     try {
-      const session = sessionService.createSession();
+      const session = await sessionService.createSession();
 
       res.status(201).json({
         sessionId: session.id,
@@ -24,7 +24,7 @@ export class SessionController {
   async getSession(req: Request, res: Response): Promise<void> {
     try {
       const { sessionId } = req.params;
-      const sessionInfo = sessionService.getSessionInfo(sessionId);
+      const sessionInfo = await sessionService.getSessionInfo(sessionId);
 
       if (!sessionInfo) {
         res.status(404).json({ error: "Session not found" });
@@ -43,7 +43,7 @@ export class SessionController {
 
   async getAllSessions(req: Request, res: Response): Promise<void> {
     try {
-      const sessions = sessionService.getAllSessions();
+      const sessions = await sessionService.getAllSessions();
 
       res.json({
         totalSessions: sessions.length,
@@ -61,7 +61,7 @@ export class SessionController {
   async clearSession(req: Request, res: Response): Promise<void> {
     try {
       const { sessionId } = req.params;
-      const success = sessionService.clearSession(sessionId);
+      const success = await sessionService.clearSession(sessionId);
 
       if (!success) {
         res.status(404).json({ error: "Session not found" });
