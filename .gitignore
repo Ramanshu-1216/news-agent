@@ -1,0 +1,65 @@
+# ======================
+# OS / Editor junk files
+# ======================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.swm
+*.log
+
+# ======================
+# Python
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv
+*.sqlite3
+
+# Poetry
+.poetry/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ======================
+# Node.js
+# ======================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# ======================
+# Environment & Secrets
+# ======================
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+*.key
+*.pem
+
+# ======================
+# IDEs
+# ======================
+.vscode/
+.idea/
+*.iml
