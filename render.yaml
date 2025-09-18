@@ -17,8 +17,9 @@ services:
     env: node
     rootDir: backend
     buildCommand: |
-      cd backend
+      pwd
       pnpm install
+      pnpm build
     startCommand: |
       pnpm start
     plan: free
