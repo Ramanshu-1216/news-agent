@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def ask_more_info(state: RetrievalAgentState) -> RetrievalAgentState:
     logger.info("Asking for more info")
     try:
-        llm = get_llm(model_name="gemini-1.5-flash", temperature=0.5)
+        llm = get_llm(model_name="gemini-2.5-flash-lite", temperature=0.5)
         formatted_chat_history = format_chat_history(state.chat_history)
 
         ask_for_more_info_prompt = ASK_FOR_MORE_INFO_PROMPT.format(

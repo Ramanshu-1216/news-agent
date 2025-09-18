@@ -24,7 +24,7 @@ def construct_response(state: RetrievalAgentState) -> RetrievalAgentState:
     try:
         print(f"Analyzing and constructing answer for {state.query}")
 
-        llm = get_llm(model_name="gemini-2.5-flash", temperature=0.5)
+        llm = get_llm(model_name="gemini-2.5-flash-lite", temperature=0.5)
         formatted_chat_history = format_chat_history(state.chat_history)
 
         formatted_retrieved_documents = format_retrieved_documents(

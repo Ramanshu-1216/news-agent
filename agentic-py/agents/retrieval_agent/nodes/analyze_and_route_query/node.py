@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def analyze_and_route_query(state: RetrievalAgentState) -> RetrievalAgentState:
     logger.info("Analyzing and routing query")
     try:
-        llm = get_llm(model_name="gemini-1.5-flash")
+        llm = get_llm(model_name="gemini-2.5-flash-lite")
         structured_llm = llm.with_structured_output(RoutingDecisionOutputType)
 
         formatted_chat_history = format_chat_history(state.chat_history)

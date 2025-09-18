@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def general_conversation(state: RetrievalAgentState) -> RetrievalAgentState:
     logger.info("Responding to general conversation")
     try:
-        llm = get_llm(model_name="gemini-1.5-flash", temperature=1)
+        llm = get_llm(model_name="gemini-2.5-flash-lite", temperature=1)
 
         formatted_chat_history = format_chat_history(state.chat_history)
 

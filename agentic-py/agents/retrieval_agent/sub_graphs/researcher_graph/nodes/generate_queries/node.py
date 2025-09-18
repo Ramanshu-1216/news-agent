@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def generate_queries(state: ResearcherGraphState) -> ResearcherGraphState:
     logger.info("Generating queries")
     try:
-        llm = get_llm(model_name="gemini-1.5-flash", temperature=0.7)
+        llm = get_llm(model_name="gemini-2.5-flash-lite", temperature=0.7)
         structured_llm = llm.with_structured_output(RetrievalQueriesOutputType)
 
         prompt = GENERATE_DIVERSE_QUERIES_PROMPT.format(
