@@ -600,22 +600,6 @@ files = [
 ]
 
 [[package]]
-name = "crypto"
-version = "1.4.1"
-description = "Simple symmetric GPG file encryption and decryption"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "crypto-1.4.1-py2.py3-none-any.whl", hash = "sha256:985120aa86f71545388199f96a2a0e00f7ccfe5ecd14c56355eb399e1a63d164"},
-    {file = "crypto-1.4.1.tar.gz", hash = "sha256:8f2ee9756a0265c18845ac097ae447c75cfbde158abe1361b7491619f866a9bd"},
-]
-
-[package.dependencies]
-Naked = "*"
-shellescape = "*"
-
-[[package]]
 name = "cryptography"
 version = "45.0.7"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
@@ -2278,22 +2262,6 @@ files = [
 ]
 
 [[package]]
-name = "naked"
-version = "0.1.32"
-description = "A command line application framework"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "Naked-0.1.32-py2.py3-none-any.whl", hash = "sha256:ea3d7eeada6b89bd8464ba0cfaa631867aaa68a3e2d5d6a6800cbe74f8941e5f"},
-    {file = "Naked-0.1.32.tar.gz", hash = "sha256:f81015107e3aefdc801d7144fbae214bdf3cb179c0020a1dc6d5acb3659d5d5c"},
-]
-
-[package.dependencies]
-pyyaml = "*"
-requests = "*"
-
-[[package]]
 name = "news-please"
 version = "1.6.15"
 description = "news-please is an open source easy-to-use news extractor that just works."
@@ -3887,18 +3855,6 @@ files = [
 ]
 
 [[package]]
-name = "shellescape"
-version = "3.8.1"
-description = "Shell escape a string to safely use it as a token in a shell command (backport of cPython shlex.quote for Python versions 2.x & < 3.3)"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "shellescape-3.8.1-py2.py3-none-any.whl", hash = "sha256:f17127e390fa3f9aaa80c69c16ea73615fd9b5318fd8309c1dca6168ae7d85bf"},
-    {file = "shellescape-3.8.1.tar.gz", hash = "sha256:40b310b30479be771bf3ab28bd8d40753778488bd46ea0969ba0b35038c3ec26"},
-]
-
-[[package]]
 name = "simsimd"
 version = "6.5.3"
 description = "Portable mixed-precision BLAS-like vector math library for x86 and ARM"
@@ -5118,4 +5074,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "47a55f489d70296f156d40d568f265ffeb0b7456df3acfce4794d943f0c68c66"
+content-hash = "5fb41f6dcaff7812586b413a8cf4b08ec31e49e125d9b038a2784940d7176e8d"

@@ -3,8 +3,8 @@ from agents.retrieval_agent.sub_graphs.researcher_graph.state import (
 )
 from langgraph.types import Send
 from agents.retrieval_agent.sub_graphs.researcher_graph.nodes.run_retrieval.schemas import (
-    VectorDocumentMetadata,
     ProcessedVectorDocument,
+    VectorDocumentMetadata,
 )
 from langchain_core.documents import Document
 import logging
@@ -46,6 +46,7 @@ def process_chunk_document(doc: Document, score: float) -> ProcessedVectorDocume
             chunk_id=doc.metadata["chunk_id"],
             category=doc.metadata["category"],
             article_id=doc.metadata["article_id"],
+            source=doc.metadata["source"],
         )
 
         return ProcessedVectorDocument(

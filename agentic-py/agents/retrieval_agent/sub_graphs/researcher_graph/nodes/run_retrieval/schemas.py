@@ -1,5 +1,4 @@
 from typing import TypedDict, List
-from agents.embedding_agent.state import Category
 
 
 class VectorDocumentMetadata(TypedDict):
@@ -13,6 +12,7 @@ class VectorDocumentMetadata(TypedDict):
     chunk_id: str
     category: str
     article_id: str
+    source: str
 
 
 class ProcessedVectorDocument(TypedDict):

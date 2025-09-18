@@ -10,17 +10,20 @@ from agents.retrieval_agent.sub_graphs.researcher_graph.nodes.run_retrieval.sche
 class Citation(BaseModel):
     url: str
     source: str
+    authors: List[str]
+    published_date: str
+    article_id: str
 
 
 class InputState(BaseModel):
     query: str = ""
-    chat_history: List[ChatMessage]
+    chat_history: List[ChatMessage] = []
     category: Optional[Category] = "other"
 
 
 class OutputState(BaseModel):
     answer: str = ""
-    citations: List[Citation]
+    citations: List[Citation] = []
 
 
 class RetrievalAgentState(InputState, OutputState):

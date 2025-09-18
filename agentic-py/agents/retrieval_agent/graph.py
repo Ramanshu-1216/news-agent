@@ -66,7 +66,7 @@ async def run_async_graph(state: InputState):
 
 async def test_graph():
     state = InputState(
-        query="What is the capital of France?",
+        query="High court judge issues arrest warrant, saying a suspect has been charged in relation to 2012 death of 21-year-old",
         chat_history=[],
         category=Category.OTHER,
     )
