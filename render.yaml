@@ -1,4 +1,5 @@
 services:
+  # Python Service
   - type: web
     name: agentic-py
     env: python
@@ -11,13 +12,12 @@ services:
       poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
     plan: free
 
-  # --- Express Service ---
+  # Express Service
   - type: web
     name: backend
     env: node
     rootDir: backend
     buildCommand: |
-      pwd
       pnpm install
       pnpm build
     startCommand: |
