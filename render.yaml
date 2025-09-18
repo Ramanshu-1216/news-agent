@@ -19,6 +19,8 @@ services:
     rootDir: backend
     buildCommand: |
       pnpm install
+      pnpm prisma migrate deploy
+      pnpm prisma generate
       pnpm build
     startCommand: |
       pnpm start
