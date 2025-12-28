@@ -21,7 +21,7 @@ This project consists of three interconnected services that work together to pro
 ## 📁 Project Structure
 
 ```
-voosh-foods/
+news-agent/
 ├── frontend/          # Next.js React frontend
 ├── backend/           # Node.js Express backend
 ├── agentic-py/        # Python FastAPI AI service
@@ -44,7 +44,7 @@ voosh-foods/
 
 ```bash
 git clone <repository-url>
-cd voosh-foods
+cd news-agent
 ```
 
 ### 2. Start the Backend (Node.js)
