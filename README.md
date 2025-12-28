@@ -1,4 +1,4 @@
-# 🚀 Voosh Foods - RAG-Powered News Chatbot
+# 🚀 RAG-Powered News Chatbot
 
 A sophisticated AI-powered news chatbot system built with modern web technologies, featuring real-time streaming, intelligent session management, and advanced RAG (Retrieval-Augmented Generation) capabilities.
 
